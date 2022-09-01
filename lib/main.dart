@@ -1,5 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tsa_2/widget_flutter.dart';
+import 'package:flutter_tsa_2/input_fields.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,13 +26,33 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const BelajarNavBar(),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class _MyHomePageState extends State<BelajarNavBar> {
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
+
+  // This widget is the home page of your application. It is stateful, meaning
+  // that it has a State object (defined below) that contains fields that affect
+  // how it looks.
+
+  // This class is the configuration for the state. It holds the values (in this
+  // case the title) provided by the parent (in this case the App widget) and
+  // used by the build method of the State. Fields in a Widget subclass are
+  // always marked "final".
+
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  final TextEditingController _controller = TextEditingController.fromValue(
+      const TextEditingValue(text: "isi angka saja"));
 
   void _incrementCounter() {
     setState(() {
@@ -56,18 +77,32 @@ class _MyHomePageState extends State<BelajarNavBar> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.toString()),
+        title: Text(widget.title),
       ),
       body: Center(
         child: GestureDetector(
-            onTap: _incrementCounter,
+            onLongPress: _incrementCounter,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const BelajarNavBar(),
-                Text(
-                  '$_counter',
-                  style: Theme.of(context).textTheme.headline4,
+                Form(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      VerificationCodeFormField(controller: _controller),
+                      Builder(
+                        builder: (BuildContext subContext) => ElevatedButton(
+                          onPressed: () {
+                            final valid = Form.of(subContext)?.validate();
+                            if (kDebugMode) {
+                              print("valid: $valid");
+                            }
+                          },
+                          child: const Text("validate"),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ],
             )),
